@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>husky-flight-search</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>husky-flight-search</h1>
+      <p class="muted">MVP: link-out + saved searches (no scraping)</p>
+    </header>
+
+    <section class="card">
+      <h2>New search</h2>
+      <form method="post" action="/searches" class="grid">
+        <label>
+          Origin (IATA)
+          <input name="origin" placeholder="SFO" maxlength="3" required />
+        </label>
+        <label>
+          Destination (IATA)
+          <input name="destination" placeholder="NRT" maxlength="3" required />
+        </label>
+        <label>
+          Depart start (YYYY-MM-DD)
+          <input name="depart_start" placeholder="2026-03-10" />
+        </label>
+        <label>
+          Depart end (YYYY-MM-DD)
+          <input name="depart_end" placeholder="2026-03-20" />
+        </label>
+        <label>
+          Cabin
+          <select name="cabin">
+            <option value="economy">Economy</option>
+            <option value="premium_economy">Premium Economy</option>
+            <option value="business">Business</option>
+            <option value="first">First</option>
+          </select>
+        </label>
+        <label>
+          Passengers
+          <input name="passengers" type="number" min="1" max="9" value="1" />
+        </label>
+        <label class="full">
+          Notes
+          <input name="notes" placeholder="Flexible dates, prefer nonstop, etc." />
+        </label>
+        <div class="full">
+          <button type="submit">Save search</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Saved searches</h2>
+      {% if searches|length == 0 %}
+        <p class="muted">No searches yet.</p>
+      {% else %}
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Route</th>
+              <th>Dates</th>
+              <th>Cabin</th>
+              <th>Pax</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in searches %}
+            <tr>
+              <td>{{ s.id }}</td>
+              <td><strong>{{ s.origin }}</strong> → <strong>{{ s.destination }}</strong></td>
+              <td>{{ s.depart_start or '' }}{% if s.depart_end %}..{{ s.depart_end }}{% endif %}</td>
+              <td>{{ s.cabin }}</td>
+              <td>{{ s.passengers }}</td>
+              <td class="actions">
+                <a href="/searches/{{ s.id }}">Open</a>
+                <form method="post" action="/searches/{{ s.id }}/delete" onsubmit="return confirm('Delete search ' + {{ s.id }} + '?')">
+                  <button type="submit" class="danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <h2>Providers</h2>
+      <ul class="providers">
+        {% for p in providers %}
+          <li>
+            <div class="provider-name">{{ p.name }}</div>
+            <div class="muted">{{ p.region }} — {{ p.note }}</div>
+            <div><a href="{{ p.url }}" target="_blank" rel="noreferrer">Open</a></div>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <footer class="muted">
+      <p>API: <code>/api/searches</code>, <code>/api/providers</code></p>
+    </footer>
+  </main>
+</body>
+</html>

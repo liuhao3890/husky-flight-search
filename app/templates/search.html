@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search {{ search.id }} · husky-flight-search</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Search #{{ search.id }}</h1>
+      <p><a href="/">← Back</a></p>
+    </header>
+
+    <section class="card">
+      <h2>Details</h2>
+      <ul>
+        <li><strong>Route:</strong> {{ search.origin }} → {{ search.destination }}</li>
+        <li><strong>Dates:</strong> {{ search.depart_start or '' }}{% if search.depart_end %}..{{ search.depart_end }}{% endif %}</li>
+        <li><strong>Cabin:</strong> {{ search.cabin }}</li>
+        <li><strong>Passengers:</strong> {{ search.passengers }}</li>
+        {% if search.notes %}<li><strong>Notes:</strong> {{ search.notes }}</li>{% endif %}
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Link-outs</h2>
+      <p class="muted">We include a small hint (route/dates/cabin) in the URL fragment; many award sites won’t accept deep-link parameters reliably.</p>
+      <ul class="providers">
+        {% for item in links %}
+          <li>
+            <div class="provider-name">{{ item.provider.name }}</div>
+            <div class="muted">{{ item.provider.region }} — {{ item.provider.note }}</div>
+            <div><a href="{{ item.url }}" target="_blank" rel="noreferrer">Open search</a></div>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
