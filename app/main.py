@@ -100,11 +100,11 @@ def home(request: Request) -> HTMLResponse:
 def create_search(
     origin: str = Form(...),
     destination: str = Form(...),
-    depart_start: str | None = Form(None),
-    depart_end: str | None = Form(None),
+    depart_start: Optional[str] = Form(None),
+    depart_end: Optional[str] = Form(None),
     cabin: str = Form("economy"),
     passengers: int = Form(1),
-    notes: str | None = Form(None),
+    notes: Optional[str] = Form(None),
 ) -> RedirectResponse:
     origin = origin.strip().upper()
     destination = destination.strip().upper()
